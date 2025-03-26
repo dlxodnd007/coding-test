@@ -1,19 +1,22 @@
 import sys
+from collections import deque
 sys.setrecursionlimit(int(1e6))
 input = lambda : sys.stdin.readline().rstrip()
+def bfs(snode):
+	global adj_list, visited
 
-def dfs(node):
-	global adj_list, visited, cnt
+	q = deque()
+	q.append(snode)
+	visited[snode] = True
 
-	if visited[node]:
-		return
+	while q:
+		node = q.popleft()
 
-	visited[node] = True
-
-	# print(node, end = ' ')
-
-	for adj_node in adj_list[node]:
-		dfs(adj_node)
+		for adj_node in adj_list[node]:
+			if visited[adj_node]:
+				continue
+			q.append(adj_node)
+			visited[adj_node] = True
 
 N, M = map(int, input().split())
 adj_list = [[] for _ in range(N + 1)]
@@ -23,11 +26,12 @@ for _ in range(M):
 	adj_list[a].append(b)
 	adj_list[b].append(a)
 
-
 visited = [False] * (N + 1)
-cnt = 0 
+cnt = 0
+
 for i in range(1, N + 1):
 	if not visited[i]:
-		dfs(i)
+		bfs(i)
 		cnt += 1
+
 print(cnt)
